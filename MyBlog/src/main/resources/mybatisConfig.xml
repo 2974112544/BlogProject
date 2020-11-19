@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <!-- 开启驼峰映射 ，为自定义的SQL语句服务-->
+    <!--设置启用数据库字段下划线映射到java对象的驼峰式命名属性，默认为false-->
+    <settings>
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+    </settings>
+
+    <environments default="development">
+        <environment id="development">
+            <transactionManager type="JDBC"></transactionManager>
+            <dataSource type="POOLED">
+                <property name="driver" value="com.mysql.cj.jdbc.Driver"/>
+                <property name="url"
+                          value="jdbc:mysql://localhost:3306/myblog?characterEncoding=utf8&amp;useSSL=false&amp;serverTimezone=UTC&amp;rewriteBatchedStatements=true&amp;allowPublicKeyRetrieval=true"/>
+                <property name="username" value="root"/>
+                <property name="password" value="19990414"/>
+            </dataSource>
+        </environment>
+    </environments>
+    <mappers>
+     <!--   <mapper resource="com/jxau/UserMapper.xml"></mapper>
+-->
+        <mapper class="org.xsr.dao.UserDao"></mapper>
+        <mapper resource="org/xsr/mapper/UserDaoMapper.xml"></mapper>
+        <mapper class="org.xsr.dao.UserArticleDao"></mapper>
+        <mapper resource="org/xsr/mapper/UserArticleDaoMapper.xml"></mapper>
+        <mapper class="org.xsr.dao.UserTopicDao"></mapper>
+        <mapper resource="org/xsr/mapper/UserTopicMapper.xml"></mapper>
+        <mapper class="org.xsr.dao.AdminServiceDao"></mapper>
+        <mapper resource="org/xsr/mapper/AdminServiceMapper.xml"></mapper>
+    </mappers>
+</configuration>

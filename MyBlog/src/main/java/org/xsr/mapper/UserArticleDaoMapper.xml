@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.xsr.dao.UserArticleDao">
+
+    <resultMap id="BaseResultMao" type="org.xsr.entity.Blog">
+        <result column="article_id" jdbcType="BIGINT" property="articleID" />
+        <result column="author_id" jdbcType="VARCHAR" property="authorID" />
+        <result column="author" jdbcType="VARCHAR" property="author" />
+        <result column="avatar" jdbcType="VARCHAR" property="avatar" />
+        <result column="releaseDate" jdbcType="INTEGER" property="releaseDate" />
+        <result column="article_title" jdbcType="VARCHAR" property="articleTitle" />
+        <result column="article_view" jdbcType="LONGVARCHAR" property="articleView" />
+        <result column="article_text" jdbcType="LONGVARCHAR" property="articleText" />
+        <result column="beLong" jdbcType="LONGVARCHAR" property="beLong" />
+        <result column="label" jdbcType="VARCHAR" property="label" />
+        <result column="commentNum" jdbcType="VARCHAR" property="commentNum" />
+        <result column="views" jdbcType="INTEGER" property="views" />
+        <result column="degree" jdbcType="INTEGER" property="degree" />
+        <result column="ifComment" jdbcType="INTEGER" property="ifComment" />
+        <result column="status" jdbcType="INTEGER" property="status" />
+    </resultMap>
+    
+    <!--博客操作-->
+    <!--用户登录成功后，自动获取个人所有博客信息-->
+    <select id="userGetAllSelfArticle" resultType="org.xsr.entity.Blog">
+        select * from blog where author_id=#{authorID}
+    </select>
+    <!--用户发布博客 提交审核-->
+    <insert id="userAddArticle">
+        insert into blog (article_id,author_id,author,avatar,releaseDate,article_title,article_view,article_text,beLong,label)
+        values (#{articleID},#{authorID},#{author},#{avatar},#{releaseDate},#{articleTitle},#{articleView},#{articleText},#{beLong},#{label})
+    </insert>
+    <!--更新浏览量-->
+    <update id="updateViews" >
+        update blog set views= views+1 where article_id=#{blogID}
+    </update>
+    <!--更新评论数-->
+    <update id="updateComments" >
+        update blog set views= views+1 where article_id=#{blogID}
+    </update>
+    <!--用户删除自己一篇博客-->
+    <delete id="userDeleteArticle">
+        delete from blog where article_id=#{blogID}
+    </delete>
+    <!--用户删除自己所有博客-->
+    <delete id="userDeleteArticleAll">
+        delete from blog where author_id=#{authorID}
+    </delete>
+    <!--更新文章信息-->
+    <update id="userUpdateArticle">
+        update blog
+        <trim prefix="set" suffixOverrides="," >
+            <if test="articleTitle!=null">article_title=#{articleTitle},</if>
+            <if test="articleText!=null">article_Text=#{articleText},</if>
+            <if test="beLong!=null">beLong=#{beLong},</if>
+            <if test="label!=null">label=#{label},</if>
+        </trim>
+         where article_id=#{articleID}
+    </update>
+    <!--发布文章设置评论是否可见-->
+   <update id="makeArticleCommentIf">
+       update blog set ifComment=#{state}
+   </update>
+    <!--发布文章自动提升等级-->
+    <update id="updateLevel">
+        update users set userLevel=#{blogNum}/2 where user_id=#{authorID}
+    </update>
+    <!--查询当前登录人员所有发表文章-->
+    <select id="selectBlogNum" resultType="java.lang.Integer">
+        SELECT COUNT(*) FROM blog WHERE author_id=#{authorID}
+    </select>
+    <!--获取文章详细信息-->
+    <select id="getOneArticle" resultType="org.xsr.entity.Blog">
+        select * from blog where article_id=#{articleID};
+    </select>
+    <!--获取文章所有评论-->
+    <select id="getOneArticleComments" resultType="org.xsr.entity.BlogComment">
+        select * from blogcomment where blog_id = #{blogID}
+    </select>
+    <!--获取文章所有二级评论-->
+    <select id="getOneArticleSonComments" resultType="org.xsr.entity.SonComment">
+        select * from soncomment where articleID = #{blogID}
+    </select>
+    <!--首页获取推荐文章-->
+    <select id="getAllArticle" resultType="org.xsr.entity.Blog">
+           SELECT * FROM blog ORDER BY degree DESC LIMIT #{beginNum},#{endNum};
+    </select>
+    <!--首页推荐文章，获取当前所有文章数-->
+    <select id="countBlogNums" resultType="Integer">
+        select count(*) from blog
+    </select>
+
+    <select id="getHotArticle" resultType="org.xsr.entity.Blog">
+        SELECT * FROM blog ORDER BY views DESC LIMIT 10
+    </select>
+</mapper>

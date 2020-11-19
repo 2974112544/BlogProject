@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.xsr.dao.UserTopicDao">
+    <resultMap id="BaseResultMao" type="org.xsr.entity.Community">
+        <result column="article_id" jdbcType="BIGINT" property="communityID" />
+        <result column="author_id" jdbcType="VARCHAR" property="authorID" />
+        <result column="author" jdbcType="VARCHAR" property="author" />
+        <result column="avatar" jdbcType="VARCHAR" property="avatar" />
+        <result column="releaseDate" jdbcType="INTEGER" property="releaseDate" />
+        <result column="article_title" jdbcType="VARCHAR" property="articleTitle" />
+        <result column="article_text" jdbcType="LONGVARCHAR" property="articleText" />
+        <result column="label" jdbcType="VARCHAR" property="label" />
+        <result column="commentNum" jdbcType="VARCHAR" property="commentNum" />
+        <result column="views" jdbcType="INTEGER" property="views" />
+        <result column="degree" jdbcType="INTEGER" property="degree" />
+        <result column="ifComment" jdbcType="INTEGER" property="ifComment" />
+        <result column="status" jdbcType="INTEGER" property="state" />
+    </resultMap>
+
+    <insert id="userOpenTopic">
+        insert into community (community_id,author_id,author,avatar,releaseDate,article_title,article_text,label)
+        values (#{communityID},#{authorID},#{author},#{avatar},#{releaseDate},#{articleTitle},#{articleText},label)
+    </insert>
+
+    <delete id="userDeleteTopic">
+        delete from community where community_id=#{communityID}
+    </delete>
+</mapper>

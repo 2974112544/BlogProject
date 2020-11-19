@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <environments default="development">
+        <environment id="development">
+            <transactionManager type="JDBC"></transactionManager>
+            <dataSource type="POOLED">
+                <property name="driver" value="com.mysql.cj.jdbc.Driver"/>
+                <property name="url"
+                          value="jdbc:mysql://localhost:3306/myblog?characterEncoding=utf8&amp;useSSL=false&amp;serverTimezone=UTC&amp;rewriteBatchedStatements=true&amp;allowPublicKeyRetrieval=true"/>
+                <property name="username" value="root"/>
+                <property name="password" value="19990414"/>
+            </dataSource>
+        </environment>
+    </environments>
+    <mappers>
+     <!--   <mapper resource="com/jxau/UserMapper.xml"></mapper>
+-->
+        <mapper class="org.xsr.dao.UserDao"></mapper>
+        <mapper resource="org/xsr/mapper/UserDaoMapper.xml"></mapper>
+    </mappers>
+</configuration>

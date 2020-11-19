@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="org.xsr.dao.UserDao" >
+    <resultMap id="BaseResultMao" type="org.xsr.entity.Users">
+        <result column="user_id" jdbcType="BIGINT" property="userID" />
+        <result column="user_name" jdbcType="VARCHAR" property="userName" />
+        <result column="user_password" jdbcType="VARCHAR" property="userPassword" />
+        <result column="sex" jdbcType="VARCHAR" property="sex" />
+        <result column="age" jdbcType="INTEGER" property="age" />
+        <result column="address" jdbcType="VARCHAR" property="address" />
+        <result column="avatar" jdbcType="VARCHAR" property="avatar" />
+        <result column="phone" jdbcType="VARCHAR" property="phone" />
+        <result column="email" jdbcType="VARCHAR" property="email" />
+        <result column="commentIf" jdbcType="INTEGER" property="commentIf" />
+        <result column="topicIf" jdbcType="INTEGER" property="topicIf" />
+        <result column="userLevel" jdbcType="INTEGER" property="userLevel" />
+        <result column="admin" jdbcType="INTEGER" property="admin" />
+        <result column="lastLoginTime" jdbcType="VARCHAR" property="lastLoginTime" />
+    </resultMap>
+
+    <select id="login" resultType="org.xsr.entity.Users">
+        select * from users where phone=#{username}  or  user_id=#{username} and user_password=#{password}
+    </select>
+
+    <update id="updateLoginDate">
+        update users set lastLoginTime=#{date} where user_id=#{userID}
+    </update>
+
+    <insert id="register">
+        insert into users (user_id,user_name,user_password,sex,age,address,phone,email)
+        values(#{userID},#{userName},#{userPassword},#{sex},#{age},#{address},#{phone},#{email})
+    </insert>
+
+    <select id="registerCheck" resultType="String">
+        select user_id from users where phone=#{phone}
+    </select>
+
+    <update id="updateMess">
+        update users
+        <trim prefix="set" suffixOverrides="," >
+            <if test="userName!=null">user_name=#{userName},</if>
+            <if test="userPassword!=null">user_password=#{userPassword},</if>
+            <if test="sex!=null">sex=#{sex},</if>
+            <if test="age!=null">age=#{age},</if>
+            <if test="avatar!=null">avatar=#{avatar},</if>
+            <if test="phone!=null">phone=#{phone},</if>
+            <if test="email!=null">email=#{email},</if>
+        </trim>
+        where user_id=#{userID}
+    </update>
+
+
+    <update id="updateComments" >
+        update blog set commentNum= commentNum+1 where article_id=#{blogID}
+    </update>
+
+    <insert id="createBlogComment">
+        insert into blogcomment (blog_id,author_id,author,avatar,releaseDate,comment_text)
+        values (#{blogID},#{authorID},#{author},#{avatar},#{releaseDate},#{commentText})
+    </insert>
+
+    <insert id="createBlogSonComment">
+        insert into soncomment (articleType,fatherID,articleID,authorID,author,avatar,releaseDate,commentText)
+        values (#{articleType},#{fatherID},#{articleID},#{authorID},#{author},#{avatar},#{releaseDate},#{commentText})
+    </insert>
+
+    <insert id="createTopicComment">
+        insert into communitycomment (comment_id,topic_id,authorId,author,avatar,releaseDate,comment_text)
+        values (#{commentID},#{topicID},#{authorID},#{author},#{avatar},#{releaseDate},#{commentText})
+    </insert>
+
+    <delete id="deleteBlogComment">
+        delete from blogcomment where comment_id=#{commentID}
+    </delete>
+
+    <delete id="deleteTopicComment">
+        delete from communitycomment where comment_id=#{commentID}
+    </delete>
+
+    <update id="reportBlogComment">
+        update blogcomment set state=#{state} where comment_id=#{commentID}
+    </update>
+    <update id="reportBlogSonComment">
+        update soncomment set state=#{state} where commentID=#{commentID}
+    </update>
+
+    <update id="reportTopicComment">
+        update communitycomment set state=#{state} where comment_id=#{commentID}
+    </update>
+
+    <update id="reportBlog">
+        update blog set status=#{status} where article_id=#{articleID}
+    </update>
+
+    <update id="reportTopic">
+        update community set state=#{state} where community_id=#{communityID}
+    </update>
+
+    <select id="getCommentsToMe" resultType="org.xsr.entity.BlogComment">
+        SELECT * FROM blogcomment WHERE blog_id IN (SELECT article_id FROM blog WHERE author_id=#{userID}) limit #{beginNum},#{endNum}
+    </select>
+
+    <select id="searchBlogs" resultType="org.xsr.entity.Blog">
+        SELECT * FROM blog WHERE article_title LIKE '%${keywords}%' OR belong LIKE '%${keywords}%' OR label = '%${keywords}%' limit #{beginNum},#{endNum}
+    </select>
+
+    <select id="getMyCommets" resultType="org.xsr.entity.BlogComment">
+        select * from blogcomment where author_id=#{userID} limit #{beginNum},#{endNum}
+    </select>
+</mapper>
